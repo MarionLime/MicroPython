@@ -37,19 +37,13 @@ velocity = 1
 default_value_max_proj = 6
 value_max_proj = 6
 
-score = 0
-default_score = 0
-
 game_time = 0
 default_playing_game = 0
 
 value_spawn_x = 30
 value_spawn_y = 50
 
-
-proj_group = []
 invaders = []
-projectil_invaders_g = []
 
 
 def wait_pin_change(pin, status_hope):
@@ -126,11 +120,7 @@ class Racket:
         uart.write(self.skin)
         delay(100)
 
-
-racket = Racket(x=value_spawn_x, y=value_spawn_y, skin="|oOo|")
-write_reg(CTRL_REG4, 0x77)
-
-
+        
 class Projectil:
 
     def __init__(self, x, y, skin):
@@ -209,47 +199,6 @@ class Invaders:
         self.erase()
         move(self.x, self.y)
         uart.write(self.skin)
-
-    def shoot(self):
-        if self.status_shoot <= 10:
-            projectil_invaders_g.append(
-                Projectil_invaders(
-                    x=self.x + 1,
-                    y=self.y + (len(self.skin) // 2),
-                )
-            )
-            self.status_shoot += 1
-
-
-class Projectil_invaders:
-
-    def __init__(self, x, y, ):
-        self.x = x
-        self.y = y
-        self.skin = "*"
-        self.status = 0
-
-    def erase(self):
-        move(self.x, self.y)
-        uart.write('  ' * len(self.skin))
-
-    def move(self):
-        global game
-        self.erase()
-        self.collide()
-        if self.status == 0:
-            if self.x < (Bottom_Value - velocity - 1):
-                self.x += 1 + (velocity // 2)
-                move(self.x, self.y)
-                uart.write(self.skin)
-            else:
-                projectil_invaders_g.remove(self)
-        delay(1)
-
-    def collide(self):
-        if racket.x <= self.x < racket.x + 2 and racket.y <= self.y < racket.y + len(racket.skin):
-            self.status = 1
-            racket.status = 1
 
 
 def clock(timer):
@@ -413,7 +362,7 @@ def victory():
     while True:
         if push_button.value() == 1:
             move(18, 60)
-            uart.write("Retour au menu principal : ")
+            uart.write("Retour menu principal : ")
             for i in range(5, -1, -1):
                 value_counter = "{} | ".format(i)
                 uart.write(value_counter)
@@ -432,7 +381,7 @@ def game_over():
     while True:
         if push_button.value() == 1:
             move(18, 60)
-            uart.write("Retour au menu principal : ")
+            uart.write("Retour menu principal : ")
             for i in range(5, -1, -1):
                 value_counter = "{} | ".format(i)
                 uart.write(value_counter)
